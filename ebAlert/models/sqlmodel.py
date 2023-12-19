@@ -22,6 +22,7 @@ class EbayLink(Base):
     __tablename__ = "ebay_link"
 
     id = Column(Integer, primary_key=True)
+    chat_id = Column(String)
     link = Column(String)
 
 

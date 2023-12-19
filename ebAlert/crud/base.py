@@ -34,7 +34,7 @@ class CRUBBase:
         results = db.execute(select(self.model)).scalars().all()
         return results
 
-    def get_by_key(self, key_mapping: Dict[str, str], db: Session) -> Optional[Model]:
+    def get_by_key(self, key_mapping: Dict[str, str, str], db: Session) -> Optional[Model]:
         clean_dict = self._get_clean_dict(key_mapping)
         if not clean_dict:
             return
@@ -42,7 +42,7 @@ class CRUBBase:
         if results:
             return results[0]
 
-    def create(self, items: Dict[str, Any], db: Session) -> Optional[Model]:
+    def create(self, items: Dict[str, str, Any], db: Session) -> Optional[Model]:
         clean_dict = self._get_clean_dict(items)
         if not clean_dict:
             return
@@ -63,7 +63,7 @@ class CRUBBase:
         db.execute(delete(self.model).where(self.model.id >= 0).execution_options(synchronize_session="fetch"))
         db.commit()
 
-    def _get_clean_dict(self, obj_in: Dict[str, str]):
+    def _get_clean_dict(self, obj_in: Dict[str, str, str]):
         new_object = {}
         for key, value in obj_in.items():
             if key in self.model.__dict__.keys():
