@@ -57,27 +57,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text("Hi! Use /set <seconds> to set a timer")
 
 
-async def alarm(context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send the alarm message."""
-    job = context.job
-    await context.bot.send_message(job.chat_id, text=f"Beep! {job.data} seconds are over!")
 
 async def checkPosts(context: ContextTypes.DEFAULT_TYPE) -> None:
-	"""Send the alarm message."""
-	job = context.job
-	with get_session() as db:
-    	links = crud_link.get_all(db=db)
-    	if links:
+    """Send the alarm message."""
+    job = context.job
+    with get_session() as db:
+        links = crud_link.get_all(db=db)
+        if links:
     	    for link_model in links:
     	        # print("Processing link - id: {} - link: {} ".format(link_model.id, link_model.link))
-            	post_factory = ebayclass.EbayItemFactory(link_model.link)
-            	items = crud_post.add_items_to_db(db=db, items=post_factory.item_list)
-            	for item in items:
-                    
-        			message = f"{item.title}\n\n{item.price} ({item.city})\n\n"
-        			url = f'<a href="{item.link}">{item.link}</a>'
+                post_factory = ebayclass.EbayItemFactory(link_model.link)
+                items = crud_post.add_items_to_db(db=db, items=post_factory.item_list)
+                for item in items:
+                    message = f"{item.title}\n\n{item.price} ({item.city})\n\n"
+                    url = f'<a href="{item.link}">{item.link}</a>'
                     await context.bot.send_message(job.chat_id, text= message + url)
-            	sleep(randint(0, 40)/10)
+                    sleep(randint(0, 40)/10)
                 		
 
 
@@ -114,12 +109,12 @@ async def unset(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def show(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     with get_session() as db:
         text = ""
-		links = crud_link.get_all(db) 
+        links = crud_link.get_all(db) 
         text = ">> List of URLs\n"
         if links:
             for link_model in links:
                 text += "{0:<{1}}{2}".format(link_model.id, 8 - len(str(link_model.id)), link_model.link)
-		await update.message.reply_text(text)
+                await update.message.reply_text(text)
 
 
 async def remove(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -130,7 +125,7 @@ async def remove(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             text += "<< Link removed"
         else:
             text += "<< No link found"
-		await update.message.reply_text(text)
+            await update.message.reply_text(text)
             
 
 async def clear(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -138,7 +133,7 @@ async def clear(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         text = ""
         text += ">> Clearing database\n"
         crud_post.clear_database(db=db)
-		await update.message.reply_text(text)
+        await update.message.reply_text(text)
         
 
 async def url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -152,16 +147,16 @@ async def url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             ebay_items = ebayclass.EbayItemFactory(url)
             crud_post.add_items_to_db(db, ebay_items.item_list)
             text += "<< Link and post added to the database"
-		await update.message.reply_text(text)
+            await update.message.reply_text(text)
             
-async def go()
+# async def go()
 
 
 
 def main() -> None:
     """Run bot."""
     # Create the Application and pass it your bot's token.
-    application = Application.builder().token("TOKEN").build()
+    application = Application.builder().token("").build()
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler(["start", "help"], start))
